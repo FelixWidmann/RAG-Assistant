@@ -4,10 +4,10 @@ from io import BytesIO
 from sentence_transformers import SentenceTransformer
 from transformers import AutoTokenizer
 from Backend.Shared.minio_client import s3_client
-from Backend.Shared.chromadb_client import CHROMADB_COLLECTION
+#from Backend.Shared.chromadb_client import CHROMADB_COLLECTION
 
 BUCKET_NAME = "library"
-KEY = "Antrag_Einschreibung_TUM.pdf"
+KEY = "Advances_Financial_Machine_Learning_very_short.pdf"
 
 MODEL = SentenceTransformer("intfloat/e5-base-v2")
 TOKENIZER = AutoTokenizer.from_pretrained("intfloat/e5-base-v2")
@@ -58,13 +58,26 @@ def chunking(document, key):
         
         enriched_text = CHUNKER.contextualize(chunk=chunk)
         prefixed_text = "passage: " + enriched_text #prefix chunk for retrieval quality
+        
+        #assign unique chunk_id to each chunk for storing.
         chunk_id = f"{key}_{i}"
+
+        #extract page number and headings of the chunk
+        pages = set()
+        headings = []
+        headings.extend(chunk.meta.headings)
+
+        for item in chunk.meta.doc_items:
+            for prov in getattr(item, "prov", []):
+                    pages.add(prov.page_no)
+
+
         contextualized_chunks.append({
                 "id": chunk_id,
                 "text": prefixed_text,
                 "metadata": {
-                    "page": getattr(chunk.meta, "page_no", 0),
-                    "section": getattr(chunk.meta, "section_title", ""),
+                    "page": pages,
+                    "headings": headings,
                 }
             })
         
@@ -89,24 +102,24 @@ def embed(chunks: list):
     return chunks #return list of objects containing Chunk, metadata and embedding. 
 
 
-def store_embeddings(docs):
+# def store_embeddings(docs):
 
-    CHROMADB_COLLECTION.add(
-    ids=[d["id"] for d in docs],
-    documents=[d["text"] for d in docs],
-    metadatas=[d["metadata"] for d in docs],
-    embeddings=[d["embedding"] for d in docs]
-    )
+#     CHROMADB_COLLECTION.add(
+#     ids=[d["id"] for d in docs],
+#     documents=[d["text"] for d in docs],
+#     metadatas=[d["metadata"] for d in docs],
+#     embeddings=[d["embedding"] for d in docs]
+#     )
     
-    results = CHROMADB_COLLECTION.get(
-    # no filter means get everything
-    ids=None,
-    where=None,
-    limit=None  # None returns all
-)
+#     results = CHROMADB_COLLECTION.get(
+#     # no filter means get everything
+#     ids=None,
+#     where=None,
+#     limit=None  # None returns all
+# )
 
-    return results
-    
+#     return results
+
 def ingest_document(key: str):
     
     # download PDF
@@ -121,9 +134,9 @@ def ingest_document(key: str):
     #embed text
     embed_chunks = embed(contexted_chunks)
 
-    results = store_embeddings(embed_chunks)
+    #results = store_embeddings(embed_chunks)
 
-    return results
+    return embed_chunks
 
 
 
@@ -132,8 +145,8 @@ def main():
     result = ingest_document(KEY)
 
     # print first chunk
-    print(str(len(result)))
-    print(result)
+    #print(str(len(result)))
+    #print(result)
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,5 @@
-from Backend.Shared.chromadb_client import CHROMADB_COLLECTION
 from pydantic import BaseModel
+from chromadb import Collection
 
 class EmbeddingChunk(BaseModel):
     id: str
@@ -7,21 +7,22 @@ class EmbeddingChunk(BaseModel):
     metadata: dict
     embedding: list[float]
 
-def store_embeddings(docs: list[EmbeddingChunk]):
+def store_embeddings(docs: list[EmbeddingChunk], collection: Collection ):
 
     try:
-        CHROMADB_COLLECTION.add(
+        collection.add(
             ids=[d["id"] for d in docs],
             documents=[d["text"] for d in docs],
             metadatas=[d["metadata"] for d in docs],
             embeddings=[d["embedding"] for d in docs]
         )
 
-        return True, "Embeddings stored successfully."
+        return "Embeddings stored successfully."
 
     except Exception as e:
+        
         # Catch any error and return False
-        return False, f"Failed to store embeddings: {e}"
+        raise RuntimeError(f"Failed to store Embeddings") from e
 
     
 

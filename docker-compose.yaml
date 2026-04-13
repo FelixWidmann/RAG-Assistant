@@ -1,0 +1,83 @@
+#Application Start up 
+
+services: 
+
+  chromadb:
+    image: chromadb/chroma
+    container_name: chromadb
+    volumes: 
+      - ./chromadb:/data
+    ports: 
+      - "8001:8000"
+  
+  miniodb:
+    image: minio/minio
+    container_name: minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - ./miniodb:/data
+    ports: 
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+
+  backend: 
+    image: rag-backend:latest
+    container_name: backend
+    environment:
+    #Chromadb
+      CHROMADB_HOST: ${CHROMADB_HOST}
+      CHROMADB_DIRECTORY: ${CHROMADB_DIRECTORY}
+      CHROMADB_PORT: ${CHROMADB_PORT}
+    #Minio
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_BUCKET_NAME: ${MINIO_BUCKET_NAME}
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+    #ollama
+      LANGUAGE_MODEL: ${LANGUAGE_MODEL}
+      OLLAMA_NUM_BATCH: ${OLLAMA_NUM_BATCH}
+      OLLAMA_CONTEXT_LENGTH: ${OLLAMA_CONTEXT_LENGTH}
+      OLLAMA_HOST: ${OLLAMA_HOST}
+      LANGUAGE_MODEL_ENDPOINT: ${LANGUAGE_MODEL_ENDPOINT}
+    #Model
+      MAX_TOKENS: ${MAX_TOKENS}
+      OVERLAP: ${OVERLAP}
+      INCLUDE_METADATA: ${INCLUDE_METADATA}
+      MODEL_NAME: ${MODEL_NAME}
+
+    ports:
+      - "8000:8000"
+    volumes: 
+    - ./models:/app/models
+
+    depends_on: 
+      - "chromadb"
+      - "miniodb"
+      - "ollama"
+  
+  frontend: 
+    build:
+      context: ./Frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - "backend"
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes: 
+      - ./ollama_data:/root/.ollama
+    environment:
+      OLLAMA_NUM_BATCH: ${OLLAMA_NUM_BATCH}
+      OLLAMA_CONTEXT_LENGTH: ${OLLAMA_CONTEXT_LENGTH}
+      OLLAMA_KEEP_ALIVE: ${OLLAMA_KEEP_ALIVE}
+

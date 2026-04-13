@@ -1,23 +1,29 @@
 # backend/routes/chat.py
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from fastapi.responses import JSONResponse
+
+from Backend.Infrastructure.orchestrator import orchestrate_query
+
+class QuestionRequest(BaseModel):
+    question: str
+    collection: str
 
 chat_router = APIRouter()
 
-#define query class
-class ChatRequest(BaseModel):
-    question: str
+@chat_router.post("/ask")
+def chat_answer(request: QuestionRequest):
+    
+    query = request.question
+    collection = request.collection
 
-#define answer Class
-class ChatResponse(BaseModel):
-    answer: str
+    #run retrieval pipeline
+    try:
+    
+        answer = orchestrate_query(query, collection)
 
-@chat_router.post("/chat", response_model=ChatResponse)
-async def chat_endpoint(request: ChatRequest):
-    answer = "test" #await orchestrate_query(request.question) #Aufruf der in orchestrator.py definierten RAG Pipeline
-    return ChatResponse(answer=answer)
+        return JSONResponse({"answer": answer })
+    
+    except Exception as e:
 
-@chat_router.post("/ask", response_model=ChatResponse)
-def chat_answer(request: ChatRequest):
-    answer = f'you asked: {request.question}' #Aufruf der in orchestrator.py definierten RAG Pipeline
-    return ChatResponse(answer=answer)
+        raise HTTPException(status_code=500, detail= str(e))

@@ -1,11 +1,14 @@
 import { useState } from "react";
 
-export default function ChatComponent() {
+export default function ChatComponent({
+  selectedCollection
+}) {
 
   const [messages, setMessages] = useState([]);
   const [question, setQuestion] = useState("");
 
   const sendMessage = async () => {
+
 
     if (!question) return;
 
@@ -14,16 +17,22 @@ export default function ChatComponent() {
       text: question
     };
 
+    setQuestion(""); 
+
     setMessages(prev => [...prev, userMessage]);
 
     try {
 
-      const response = await fetch("http://localhost:8000/ask", {
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+      
+      console.log(selectedCollection)
+
+      const response = await fetch(`${API_URL}/ask`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ question })
+        body: JSON.stringify({ "question": userMessage.text, "collection": selectedCollection })
       });
 
       const data = await response.json();
@@ -41,7 +50,7 @@ export default function ChatComponent() {
         ...prev,
         { role: "assistant", text: "Error contacting backend." }
       ]);
-
+      
     }
 
     setQuestion("");
@@ -49,53 +58,37 @@ export default function ChatComponent() {
   };
 
   return (
-
-    <div>
-
-      <h2>Chat</h2>
-
-      <div style={{
-        border: "1px solid #ccc",
-        height: "500px",
-        width: "500px",
-        overflowY: "auto",
-        padding: "10px",
-        marginBottom: "10px"
-      }}>
-
+    <div className="chat-container">
+  
+      <div className="chat-messages">
         {messages.map((msg, index) => (
-
-          <div key={index} style={{ marginBottom: "10px" }}>
-
-            <b>{msg.role === "user" ? "You" : "Assistant"}:</b>
+          <div key={index} className="chat-message">
+            <b>
+              {msg.role === "user" ? "You" : "Assistant"}:
+            </b>
             <div>{msg.text}</div>
-
           </div>
-
         ))}
-
       </div>
-
-      <input
-        type="text"
-        value={question}
-        placeholder="Ask a question..."
-        onChange={(e) => setQuestion(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") sendMessage();
-        }}
-        style={{ width: "70%", padding: "8px" }}
-      />
-
-      <button
-        onClick={sendMessage}
-        style={{ padding: "8px", marginLeft: "10px" }}
-      >
-        Send
-      </button>
-
+  
+      <div className="chat-input-area">
+        <input
+          type="text"
+          value={question}
+          placeholder="Ask a question..."
+          onChange={(e) => setQuestion(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") sendMessage();
+          }}
+          className="chat-input"
+        />
+  
+        <button onClick={sendMessage} className="chat-send">
+          Send
+        </button>
+      </div>
+  
     </div>
-
   );
 
 }

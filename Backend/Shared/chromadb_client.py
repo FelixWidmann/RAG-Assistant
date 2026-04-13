@@ -1,6 +1,5 @@
 import chromadb
-from Backend.Shared.config import CHROMADB_COLLECTION_NAME, CHROMADB_DIRECTORY, CHROMADB_PORT
+from chromadb.config import Settings
+from Backend.Shared.config import CHROMADB_PORT, CHROMADB_HOST
 
-chroma_client = chromadb.HttpClient(host='localhost', port=CHROMADB_PORT)
-
-CHROMADB_COLLECTION = chroma_client.get_or_create_collection(name=CHROMADB_COLLECTION_NAME,  embedding_function = None)
+chroma_client = chromadb.HttpClient(host=CHROMADB_HOST, port=CHROMADB_PORT, settings=Settings(allow_reset=True, anonymized_telemetry=False))

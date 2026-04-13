@@ -52,11 +52,17 @@
 
 body {
   margin: 0;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
 }
+
 
 #root {
   width: 1126px;
   max-width: 100%;
+  height: 100%;
+  width: 100%;
   margin: 0 auto;
   text-align: center;
   border-inline: 1px solid var(--border);
@@ -108,4 +114,201 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+
+/* Project Component */
+
+.sidebar {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* spacing between items */
+}
+
+/* Each project item if not selected */
+.project-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  height: 44px; /* consistent size */
+  padding: 0 12px;
+
+  background-color: #1c1c2b;
+  color: #ccc;
+
+  border-radius: 10px;
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+/* hover effect */
+.project-item:hover {
+  background-color: #2a2a3a;
+}
+
+/* selected state if selected */
+.project-item.selected {
+  background-color: #3a3a5a;
+  color: white;
+}
+
+/* project name */
+.project-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* delete button */
+.project-delete {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.project-delete:hover {
+  color: #ff6b6b;
+}
+
+/* form */
+.project-form {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.project-form input {
+  flex: 1;
+  height: 44px; /* consistent size */
+  padding: 0 12px;
+  border-radius: 8px;
+  border: none;
+  background: #1c1c2b;
+  color: white;
+}
+
+.project-form button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: #1c1c2b;
+  cursor: pointer;
+}
+
+
+/* Chat Component */
+
+/* container */
+.chat-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* message box */
+.chat-messages {
+  flex: 20;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 10px;
+  margin-bottom: 10px;
+  overflow-y: auto;
+}
+
+/* single message */
+.chat-message {
+  margin-bottom: 10px;
+}
+
+/* input area */
+.chat-input-area {
+  flex: 1;
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+/* input field */
+.chat-input {
+  flex: 10;
+  padding: 8px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background-color: #1c1c2b;
+  color: #fff;
+}
+
+/* send button */
+.chat-send {
+  flex: 1;
+  padding: 8px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background-color: #2a2a3a;
+  color: white;
+  transition: 0.2s;
+}
+
+.chat-send:hover {
+  background-color: #3a3a5a;
+}
+
+/* Upload Component */
+
+/* container */
+.upload-container {
+  margin-bottom: 30px;
+  padding: 10px;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* hidden input */
+.upload-input-hidden {
+  display: none;
+}
+
+/* upload button */
+.upload-button {
+  display: inline-block;
+  cursor: pointer;
+
+  padding: 8px 16px;
+  border-radius: 10px;
+
+  background-color: #007bff;
+  color: #fff;
+
+  transition: 0.2s;
+}
+
+.upload-button:hover {
+  background-color: #0056b3;
+}
+
+/* status text */
+.upload-status {
+  margin-top: 10px;
+  min-width: 0;
+  word-break: break-word;
+  color: #ccc;
 }

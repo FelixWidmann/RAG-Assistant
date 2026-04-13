@@ -1,6 +1,6 @@
 import boto3
 from botocore.client import Config
-from Backend.Shared.config import MINIO_ENDPOINT, MINIO_ACCESS_KEY, MINIO_SECRET_KEY
+from Backend.Shared.config import MINIO_ENDPOINT, MINIO_ACCESS_KEY, MINIO_SECRET_KEY, MINIO_BUCKET_NAME
 
 s3_client = boto3.client(
     "s3",
@@ -12,5 +12,5 @@ s3_client = boto3.client(
 
 def ensure_bucket():
     buckets = [b["Name"] for b in s3_client.list_buckets()["Buckets"]]
-    if BUCKET_NAME not in buckets:
-        s3_client.create_bucket(Bucket=BUCKET_NAME)
+    if MINIO_BUCKET_NAME not in buckets:
+        s3_client.create_bucket(Bucket=MINIO_BUCKET_NAME)

@@ -1,0 +1,10 @@
+fastapi
+pydantic
+uvicorn
+docling
+tesserocr
+boto3
+sentence_transformers
+transformers
+chromadb
+python-multipart
