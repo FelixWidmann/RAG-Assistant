@@ -4,25 +4,25 @@ A Retrieval-Augmented Generation (RAG) based study assistant designed to provide
 
 ✨ Features
 
-  🔍 Retrieval-Augmented Generation (RAG)
+- Retrieval-Augmented Generation (RAG)
 Answers are generated strictly from provided lecture materials
 Minimizes hallucinations by grounding responses in retrieved context
 
-  📄 Source Attribution
+- Source Attribution
 Every answer includes references to:
 Document name
 Page number
 
-  📁 Project-Based Isolation
+- Project-Based Isolation
 Create multiple study projects
 Each project has access only to its own uploaded documents
 Ensures clean separation between courses or topics
 
-  🧠 LLM-Powered Answering
+- LLM-Powered Answering
 Uses llama3.2 via Ollama for local inference
 Context-aware responses based only on retrieved chunks
 
-  ⚡ Fast Semantic Search
+- Fast Semantic Search
 Vector-based retrieval using embeddings
 Efficient similarity search over lecture content
 
