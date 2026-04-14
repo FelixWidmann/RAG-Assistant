@@ -38,12 +38,12 @@ Efficient similarity search over lecture content
 
 🏗️ Architecture Overview
 
-User uploads lecture PDFs into a project
-PDFs are parsed using Docling
-Text is chunked and embedded
-Embeddings are stored in ChromaDB (backed by MinIO)
-User asks a question in the React frontend
-FastAPI retrieves relevant chunks via similarity search
-Context is passed to Llama 3.2 (Ollama)
-Model generates an answer strictly grounded in retrieved context
-Response includes document + page references
+User uploads lecture PDFs into a project ->
+PDFs are parsed using Docling ->
+Text is chunked and embedded ->
+Embeddings are stored in ChromaDB (backed by MinIO) ->
+User asks a question in the React frontend ->
+FastAPI retrieves relevant chunks via similarity search ->
+Context is passed to Llama 3.2 (Ollama) ->
+Model generates an answer strictly grounded in retrieved context ->
+Response includes document + page references ->
